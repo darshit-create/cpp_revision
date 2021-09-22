@@ -68,6 +68,25 @@ using namespace data_structures;
 		
 	}
 
+	void data_elements::display_ds() {
+
+		std::list<int>::iterator it_list;
+		std::deque<int>::iterator it_queue;
+
+		std::cout << "\n\nVector: ";
+		for (int i = 0; i < ds_vector.size(); i++) {
+			std::cout << data_elements::ds_vector[i] << ", ";
+		}
+		std::cout << "\n\nList: ";
+		for (it_list = ds_list.begin(); it_list != ds_list.end(); ++it_list) {
+			std::cout << *it_list << ", ";
+		}
+		std::cout << "\n\nQueue: ";
+		for (it_queue = ds_queue.begin(); it_queue != ds_queue.end(); ++it_queue) {
+			std::cout << *it_queue << ", ";
+		}
+	}
+
 /*Function: deleteNode
 * Parameters: int
 * Return: int
