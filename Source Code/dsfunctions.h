@@ -36,6 +36,7 @@ namespace data_structures
 		std::deque<int> ds_queue;
 
 		void make_ds(int *arr,int len);
+		void display_ds();
 	};
 	class operations : public data_elements
 	{

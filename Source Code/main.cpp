@@ -68,6 +68,12 @@ void log_init()
 * Concepts: Constructor/Destructor, Plymorphism(function overloading)
 * Overloading functions: void add(int,int), void add(string,string)
 */
+
+//perform overriding (display_ds in dsfunctions.cpp is overriden)
+//exception handling on input.
+//solution in log file on exception.
+//check behaviour when DS are empty. (programme does not crash)
+
 class marks
 {
 public:
@@ -87,87 +93,157 @@ public:
 * Parameters: N/A
 * Return: void
 * 
-* Concepts: Array, accessing user defined header file functions.
+* Concepts: Exceptions, Array, accessing user defined header file functions.
 */
 void ds_operations() {
-	BOOST_LOG_TRIVIAL(info) << "Data Structure function."; //Logging message in log file.
 
 	operations obj;
 	int value=0;
 	int len = 0;
-	cout << "\n\nEnter number of nodes to add: ";
-	while (!(cin >> len)) {
-		cout << "\nERROR: Enter a number: ";
-		cin.clear();
-		cin.ignore(123, '\n');
-	}
-	int* arr = new int[len];
-	int i = 0;
-	int j = len;
-	while (j--) {
-		cout << "\nEnter data value: ";
-		while (!(cin >> value)) {
-			cout << "\nERROR: Enter a number: ";
-			cin.clear();
-			cin.ignore(123, '\n');
+	int flag = 0;
+	std::cout << "\n\nEnter number of nodes to add: ";
+	while (!flag) {
+		try {
+			std::cin >> len;
+			if (!cin) {
+				throw - 1;
+			}
+			flag = 1;
 		}
-		arr[i] = value;
-		i++;
+		catch (int) {
+			BOOST_LOG_TRIVIAL(error) << "... \n Entered invalid input for number of nodes. Please enter only numbers.";
+			std::cin.clear();
+			std::cin.ignore(123, '\n');
+			std::cout << "\nERROR: Enter a number: ";
+		}
 	}
-	obj.data_elements::make_ds(arr,len);
-	obj.display_ds();
-	delete[] arr;
-	char choice;
-	cout << "\n\n1. Delete Node";
-	cout << "\n2. Sort";
-	cout << "\n3. Reverse";
-	cout << "\n4. Search";
-	cout << "\nEnter choice index to perform operation OR 0 to Exit: ";
-	cin >> choice;
+	flag = 0;
 
+	/*Approach without exceptions...
+	* 
+	while (!(std::cin >> len)) {
+		std::cout << "\nERROR: Enter a number: ";
+		std::cin.clear();
+		std::cin.ignore(123, '\n');
+	}*/
+
+	char choice;
+	if (len > 0) {
+		int* arr = new int[len];
+		int i = 0;
+		int j = len;
+		while (j--) {
+			std::cout << "\nEnter data value: ";
+			while (!flag) {
+				try {
+					std::cin >> value;
+					if (!cin) {
+						throw - 1;
+					}
+					arr[i] = value;
+					i++;
+					flag = 1;
+				}
+				catch (int) {
+					BOOST_LOG_TRIVIAL(error) << "... \n Entered invalid input for data. Please enter only numbers.";
+					std::cin.clear();
+					std::cin.ignore(123, '\n');
+					std::cout << "\nERROR: Enter data value(in numbers): ";
+				}
+			}
+			flag = 0;
+
+			/*while (!(std::cin >> value)) {
+				std::cout << "\nERROR: Enter a number: ";
+				std::cin.clear();
+				std::cin.ignore(123, '\n');
+			}
+			arr[i] = value;
+			i++;*/
+		}
+		obj.data_elements::make_ds(arr, len);
+		obj.data_elements::display_ds();
+		delete[] arr;
+		
+		std::cout << "\n\n1. Delete Node";
+		std::cout << "\n2. Sort";
+		std::cout << "\n3. Reverse";
+		std::cout << "\n4. Search";
+		std::cout << "\nEnter choice index to perform operation OR 0 to Exit: ";
+		std::cin >> choice;
+	}
+	else {
+		BOOST_LOG_TRIVIAL(error) << "... \n Data structure can't be empty. Use only positive value for input.";
+		std::cout << "\nData structure can't be empty. Use only positive value for input.";
+		return;
+	}
 	int key = 0;
 	int index = 0;
 	while (choice != '0') {
 		switch (choice)
 		{
 		case '1':
-			cout << "\nEnter node index to delete: ";
-			while (!(cin >> index)) {
-				cout << "\nERROR: Enter a number: ";
-				cin.clear();
-				cin.ignore(123, '\n');
+			std::cout << "\nEnter node index to delete: ";
+			while (!flag) {
+				try {
+					std::cin >> index;
+					if (!cin) {
+						throw - 1;
+					}
+
+					if (obj.deleteNode(index))
+						obj.data_elements::display_ds();
+					flag = 1;
+				}
+				catch (int) {
+					BOOST_LOG_TRIVIAL(error) << "... \n Entered invalid input for index to delete. Please enter only numbers.";
+					std::cin.clear();
+					std::cin.ignore(123, '\n');
+					std::cout << "\nERROR: Enter index(in numbers): ";
+				}
 			}
-			if(obj.deleteNode(index))
-				obj.display_ds();
+			flag = 0;
 			break;
 		case '2':
 			obj.sortAll();
-			obj.display_ds();
+			obj.data_elements::display_ds();
 			break;
 		case '3':
 			obj.reverseAll();
-			obj.display_ds();
+			obj.data_elements::display_ds();
 			break;
 		case '4':
-			cout << "\nEnter value to search: ";
-			while (!(cin >> key)) {
-				cout << "\nERROR: Enter a number: ";
-				cin.clear();
-				cin.ignore(123, '\n');
+			std::cout << "\nEnter value to search: ";
+			while (!flag) {
+				try {
+					std::cin >> key;
+					if (!cin) {
+						throw - 1;
+					}
+
+					obj.searchValue(key);
+					flag = 1;
+				}
+				catch (int) {
+					BOOST_LOG_TRIVIAL(error) << "... \n Entered invalid input for search value. Please enter only numbers.";
+					std::cin.clear();
+					std::cin.ignore(123, '\n');
+					std::cout << "\nERROR: Enter value to search(in numbers): ";
+				}
 			}
-			obj.searchValue(key);
+			flag = 0;
 			break;
 		default:
-			cout << "\nERROR: Choice index out of scope!!";
+			std::cout << "\nERROR: Choice index out of scope!!";
 			break;
 		}
 
-		cout << "\n\n1. Delete Node";
-		cout << "\n2. Sort";
-		cout << "\n3. Reverse";
-		cout << "\n4. Search";
-		cout << "\nEnter choice index to perform operation OR 0 to Exit: ";
-		cin >> choice;
+		std::cout << "\n\n1. Delete Node";
+		std::cout << "\n2. Sort";
+		std::cout << "\n3. Reverse";
+		std::cout << "\n4. Search";
+		std::cout << "\nEnter choice index to perform operation OR 0 to Exit: ";
+		std::cin >> choice;
 	}
 }
 
@@ -226,7 +302,6 @@ void write_to_xmlFile() {
 * Concepts: Read from JSON file, string operations, Exception Handling.
 */
 void file_operations() {
-	BOOST_LOG_TRIVIAL(info) << "File I/O function.";
 
 	try {
 		Json::Value student_data;
